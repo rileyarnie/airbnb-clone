@@ -13,18 +13,19 @@ type Props = {};
 const Layout = (props: Props) => {
   return (
     <Tabs
-      initialRouteName="explore"
+      // initialRouteName="explore"
       screenOptions={{
         tabBarActiveTintColor: COLORS.primaryRed,
         tabBarLabelStyle: { fontFamily: "Montserrat-semibold" },
       }}
     >
       <Tabs.Screen
-        name="explore"
+        name="index"
         options={{
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="search" size={size} color={color} />
           ),
+          tabBarLabel: "Explore",
         }}
       />
       <Tabs.Screen
@@ -33,6 +34,7 @@ const Layout = (props: Props) => {
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="heart-outline" size={size} color={color} />
           ),
+          tabBarLabel: "Wishlists",
         }}
       />
       <Tabs.Screen
@@ -41,6 +43,7 @@ const Layout = (props: Props) => {
           tabBarIcon: ({ size, color }) => (
             <FontAwesome5 name="airbnb" size={size} color={color} />
           ),
+          tabBarLabel: "Trips",
         }}
       />
       <Tabs.Screen
@@ -49,6 +52,7 @@ const Layout = (props: Props) => {
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="ios-chatbox-outline" size={size} color={color} />
           ),
+          tabBarLabel: "Inbox",
         }}
       />
       <Tabs.Screen
@@ -57,6 +61,7 @@ const Layout = (props: Props) => {
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="person-circle" size={size} color={color} />
           ),
+          tabBarLabel: "Profile",
         }}
       />
     </Tabs>

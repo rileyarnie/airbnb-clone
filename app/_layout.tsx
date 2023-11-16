@@ -1,3 +1,5 @@
+import COLORS from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -5,9 +7,9 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { router, SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { Platform, Pressable, Touchable, useColorScheme } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -56,6 +58,49 @@ function RootLayoutNav() {
     // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(modals)/login"
+        options={{
+          title: "Login or sign up",
+          presentation: "modal",
+          headerTitleStyle: { fontFamily: "Montserrat-semibold" },
+          headerLeft:
+            Platform.OS === "ios"
+              ? () => (
+                  <Pressable onPress={() => router.back()}>
+                    <Ionicons
+                      name="close-outline"
+                      size={28}
+                      color={COLORS.dark}
+                    />
+                  </Pressable>
+                )
+              : undefined,
+        }}
+      />
+      <Stack.Screen
+        name="(modals)/booking"
+        options={{
+          presentation: "transparentModal",
+          animation: "fade",
+          headerLeft:
+            Platform.OS === "ios"
+              ? () => (
+                  <Pressable onPress={() => router.back()}>
+                    <Ionicons
+                      name="close-outline"
+                      size={28}
+                      color={COLORS.dark}
+                    />
+                  </Pressable>
+                )
+              : undefined,
+        }}
+      />
+      <Stack.Screen
+        name="listing/[id]"
+        options={{ presentation: "modal", headerTitle: "" }}
+      />
     </Stack>
     // </ThemeProvider>
   );
