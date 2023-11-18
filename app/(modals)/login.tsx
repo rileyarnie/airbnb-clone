@@ -10,11 +10,49 @@ import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
 import COLORS from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { useOAuth } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 
 type Props = {};
 
+enum Strategy {
+  Apple = "oauth_apple",
+  Facebook = "oauth_facebook",
+  Google = "oauth_google",
+}
+
 const Login = (props: Props) => {
   useWarmUpBrowser();
+
+  const router = useRouter();
+
+  const { startOAuthFlow: startOAuthApple } = useOAuth({
+    strategy: "oauth_apple",
+  });
+  const { startOAuthFlow: startOAuthFacebook } = useOAuth({
+    strategy: "oauth_facebook",
+  });
+  const { startOAuthFlow: startOAuthGoogle } = useOAuth({
+    strategy: "oauth_google",
+  });
+
+  const onSelectAuthStrategy = async (strategy: Strategy) => {
+    const selectedStrategy = {
+      [Strategy.Apple]: startOAuthApple,
+      [Strategy.Facebook]: startOAuthFacebook,
+      [Strategy.Google]: startOAuthGoogle,
+    }[strategy];
+
+    try {
+      const { createdSessionId, setActive } = await selectedStrategy();
+      if (createdSessionId) {
+        setActive!({ session: createdSessionId });
+        router.back();
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -36,7 +74,10 @@ const Login = (props: Props) => {
         <TouchableOpacity style={styles.buttonOutline}>
           <Text style={styles.buttonOutlineText}>Continue with phone</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonOutline}>
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => onSelectAuthStrategy(Strategy.Apple)}
+        >
           <Ionicons
             style={defaultStyles.btnIcon}
             name="ios-logo-apple"
@@ -45,7 +86,10 @@ const Login = (props: Props) => {
           />
           <Text style={styles.buttonOutlineText}>Continue with Apple</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonOutline}>
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => onSelectAuthStrategy(Strategy.Google)}
+        >
           <Ionicons
             style={defaultStyles.btnIcon}
             name="logo-google"
@@ -54,7 +98,10 @@ const Login = (props: Props) => {
           />
           <Text style={styles.buttonOutlineText}>Continue with Google</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonOutline}>
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => onSelectAuthStrategy(Strategy.Facebook)}
+        >
           <Ionicons
             style={defaultStyles.btnIcon}
             name="md-logo-facebook"
