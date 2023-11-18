@@ -1,15 +1,12 @@
 import COLORS from "@/constants/Colors";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { router, SplashScreen, Stack } from "expo-router";
+import { router, SplashScreen, Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Platform, Pressable, Touchable, useColorScheme } from "react-native";
+import { Platform, Pressable, useColorScheme } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -19,6 +16,27 @@ export {
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
+};
+
+//import clerk publishable key from .env
+
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (error) {
+      null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (error) {
+      return;
+    }
+  },
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -48,11 +66,27 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <ClerkProvider
+      publishableKey={CLERK_PUBLISHABLE_KEY!}
+      tokenCache={tokenCache}
+    >
+      <RootLayoutNav />
+    </ClerkProvider>
+  );
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/(modals)/login");
+    }
+  }, [isLoaded]);
 
   return (
     // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
