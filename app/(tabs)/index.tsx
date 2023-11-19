@@ -10,7 +10,10 @@ type Props = {};
 const Explore = (props: Props) => {
   const [category, setCategory] = useState("Tiny homes");
 
-  const items = useMemo(() => listingsData, []);
+  const items = useMemo(
+    () => listingsData.filter((listing) => listing.medium_url),
+    []
+  );
 
   const onSelectCategory = (categoryName: string) => {
     setCategory(categoryName);
