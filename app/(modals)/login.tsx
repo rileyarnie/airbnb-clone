@@ -12,6 +12,8 @@ import COLORS from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useOAuth } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
+import GoogleIcon from "@/components/icons/GoogleIcon";
+import FacebookIcon from "@/components/FacebookIcon";
 
 type Props = {};
 
@@ -90,24 +92,18 @@ const Login = (props: Props) => {
           style={styles.buttonOutline}
           onPress={() => onSelectAuthStrategy(Strategy.Google)}
         >
-          <Ionicons
-            style={defaultStyles.btnIcon}
-            name="logo-google"
-            size={20}
-            color="black"
-          />
+          <View style={defaultStyles.btnIcon}>
+            <GoogleIcon />
+          </View>
           <Text style={styles.buttonOutlineText}>Continue with Google</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonOutline}
           onPress={() => onSelectAuthStrategy(Strategy.Facebook)}
         >
-          <Ionicons
-            style={defaultStyles.btnIcon}
-            name="md-logo-facebook"
-            size={20}
-            color="black"
-          />
+          <View style={defaultStyles.btnIcon}>
+            <FacebookIcon />
+          </View>
           <Text style={styles.buttonOutlineText}>Continue with Facebook</Text>
         </TouchableOpacity>
       </View>
